@@ -1,7 +1,8 @@
 import flet
 import requests
-# allt som är 1 är recepten och allt som ör 2 är info
-#key s är recept, key i är info
+
+# allt som är 1 är recepten och allt som är 2 är info
+#key 's är recept, key 'i är info
 
 class SearchField1(flet.ListView):
     def __init__(self):
@@ -24,22 +25,23 @@ class Recepie(flet.Container):
             drink_name = drink.get("strDrink", "okänd drink")
             instructions_en = flet.Text(
                 drink.get("strInstructions", "No instructions available"),
-                width=300
+                width=300,
+                bgcolor="#f1f1f1",
+                color="black"
             )
             instructions_de = flet.Text(
                 drink.get("strInstructionsDE", "Keine Anweisungen verfügbar"),
-                width=300
+                width=300,
+                bgcolor="#f1f1f1",
+                color="black"
             )
             instructions_es = flet.Text(
                 drink.get("strInstructionsES", "No hay instrucciones disponibles"),
-                width=300
+                width=300,
+                bgcolor="#f1f1f1",
+                color="black"
             )
 
-
-            if drink.get("strAlcoholic") == "Alcoholic":
-                flet.Text("Alcoholic. Get wasted!!", size=20)
-            else:
-                flet.Text("Non Alcoholic", size=20)
 
             ingredients = []
             for i in range(1, 15):
@@ -51,12 +53,15 @@ class Recepie(flet.Container):
 
                 self.content = flet.Column([flet.Row([
                     flet.Text(drink_name, size=35, weight="W_500", color="black"),
-                    flet.Column([flet.Text(ing)for ing in ingredients])
-                    ]),
-                    flet.Column([flet.Text("English: ", weight="bold"), instructions_en,
-                                flet.Text("German: ", weight="bold"), instructions_de,
-                                 flet.Text("Spanish: ", weight="bold"), instructions_es,
-                                 flet.Text("-" + (drink.get("strAlcoholic")), size=20, weight="bold")])])
+                    flet.Column([flet.Text(ing, bgcolor="#f1f1f1", color="black")for ing in ingredients])],
+                    alignment=flet.MainAxisAlignment.CENTER),
+                    flet.Column([flet.Text("English: ", weight="bold", color="black" ), instructions_en,
+                                flet.Text("German: ", weight="bold", color="black"), instructions_de,
+                                 flet.Text("Spanish: ", weight="bold", color="black"), instructions_es,
+                                 flet.Text("-" + (drink.get("strAlcoholic")), size=20, weight="bold", color="black")],
+                                alignment=flet.MainAxisAlignment.CENTER)],
+                                    alignment=flet.MainAxisAlignment.CENTER,
+                                    horizontal_alignment=flet.CrossAxisAlignment.CENTER)
         else:
             self.content = flet.Text("No recepies found")
 
@@ -82,14 +87,17 @@ class Facts(flet.Container):
             description = fact.get("strDescription", "No description available")
             percentage = fact.get("strABV", "Unknown percentage")
 
-            self.content = flet.Column([
-                flet.Text(fact_name, size=35, weight="W_500", color="black"),
-                flet.Text(description, width=650, color="#0c3da6"),
-                flet.Row([
-                    flet.Text("ALcoholic", size=20, color="black"),
-                    flet.Text(f"{percentage}%", size=18)])
+            self.content = (flet.Column([
+                    flet.Text(fact_name, size=35, weight="W_500", color="black"),
+                    flet.Text(description, width=650, bgcolor="#f1f1f1", color="black"),
+                    flet.Row([
+                        flet.Text("Percentage", size=20, color="black"),
+                        flet.Text(f"{percentage}%", size=18, color="black")],
+                    alignment=flet.MainAxisAlignment.CENTER,
+                    )
 
-            ])
+            ], alignment=flet.MainAxisAlignment.CENTER,
+            horizontal_alignment=flet.CrossAxisAlignment.CENTER))
         else:
             self.content = flet.Text("No information available.")
 
@@ -120,21 +128,16 @@ def main(page: flet.Page):
         page.update()
 
 
-
     recepie_box = flet.TextField(label="What drink are you looking to make?", bgcolor="#919395")
     recepie_view = SearchField1()
-    search_button1 = flet.IconButton(icon=flet.icons.WINE_BAR_SHARP, on_click=search1)
+    search_button1 = flet.Button("Search", color="#e2def3", on_click=search1)
     recepie_box.on_submit = search1
 
 
     fact_box = flet.TextField(label="Facts about beverage", bgcolor="#919395")
     facts_view = SearchField2()
-    search_button2 = flet.IconButton(icon=flet.icons.LIGHTBULB, on_click=search2)
+    search_button2 = flet.Button("Search", color="#e2def3", on_click=search2)
     fact_box.on_submit = search2
-
-    flet.Container(
-
-    )
 
     content = flet.Column([
         flet.Row([recepie_box, search_button1], alignment=flet.MainAxisAlignment.CENTER),
@@ -150,11 +153,7 @@ def main(page: flet.Page):
             expand=True,
             fit=flet.ImageFit.COVER,
         ),
-        content
-    ],
-    expand=True,
-    alignment=flet.alignment.top_center,
-))
-
+        content],
+    expand=True))
 
 flet.app(target=main)
